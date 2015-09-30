@@ -1,26 +1,26 @@
 In this thread, I'll be demonstrating how to create your GPG Keys, how to upload them to a server, and how to encrypt your e-Mails with it.
 
-For the purposes of this thread, I'll be using KDE 5, along with KMail.
+For the purposes of this thread, I'll be using KDE 5, along with KMail. At some point in the future I'll also include Thunderbird. If you desperately need Thunderbird to be included then send me a personal message.
 
 First, let's begin with the following question: Why should you encrypt your e-Mail?
 
-To answer that, you could look at normal aspects of your daily life. When you have important things, you usually put them into a safe place where people can't easily get access to. However, when dealing with electronic messages some e-Mails are to be considered important too, yet most people don't encrypt their e-Mails. Why? Some people don't encrypt their e-Mails because they assume nobody can't get it, and because only they know the password. Is that the case? 
+To answer that, you could look at normal aspects of your daily life. When you have important things, you usually put them into a safe place where people can't easily get access to. When dealing with electronic messages some e-Mails are to be considered important too, yet most people don't encrypt them. Some people don't encrypt their e-Mails because they assume nobody can't get it, and because only they know the password. Is that the case? 
 
 "Hell no".
 
-These days most e-Mail providers (like Google) have a secure connection with you, via https. This ensures that nobody except you and Google can see those communications (assuming your system isn't tampered with). Other e-Mail providers don't use this type of secure connection.
+These days most e-Mail providers (like Google) have a secure connection with you, via https. This ensures that nobody except you and Google can see those communications (assuming your operating system isn't tampered with). Other e-Mail providers don't use this type of secure connection.
 
 On both cases, your e-Mail can be read. Let's see why.
 
-Http connections are not encrypted. If an attacker, who is in between you and your e-Mail server, has bad intentions, this attacker can eavesdrop your communications with that server or even act as if they were you or the server (known as a man in the middle attack), "in which the attacker makes independent connections with the victims and relays messages between them to make them believe they are talking directly to each other over a private connection"¹.
+Http connections are not encrypted. If an attacker, who is in between you and your e-Mail server, has bad intentions, he/she can eavesdrop your communications with that server or even act as if they were you or the server, known as a man in the middle attack, "in which the attacker makes independent connections with the victims and relays messages between them to make them believe they are talking directly to each other over a private connection"¹.
 
 On https connections, your communication with the server are encrypted, either via SSL or TLS. However, Google stil "reads" all of your e-Mails so that they can gather data from you (mostly used for advertising).
 
-So how can you communicate securely with someone, in a way that only you and the person can talk to each other? By encrypting your messages so that not even Google (or other such company like Yahoo, Microsoft, etc) can't read your e-Mails.
+So how can you communicate securely with the server, in a way that only you and the server can talk to each other? By encrypting your messages so that not even Google (or other such company like Yahoo, Microsoft, etc) can't read your e-Mails.
 
 So, let's get started!
 
-First, open your terminal. Here we'll type most of the commands needed to create your GPG (GnuPrivacyGuard) Key.
+First, open your terminal. Here we'll type all the commands needed to create your GPG (GnuPrivacyGuard) Key.
 
 If you're new to this and want an out-of-the-box Key that doesn't require any configuration, use the following command:
 
@@ -28,13 +28,19 @@ gpg --gen-key
 
 Just put your name (if you want), your e-Mail adress, then your passphrase.
 
-Remember: This default key will NEVER expire, so you might edit that later (with gpg --edit-key), or you may chose to create the keys in a more in-depth mode as bellow.
+Remember: This default key will NEVER expire, so you might edit that later (with gpg --edit-key), or you may chose to create the keys in a more in-depth mode, as shown bellow.
+
+NOTE: "gpg --gen-key" is the older command that also creates custom keys on GnuPG verions of 2.0.26 and older (might vary). Newer versions of GnuPG will create the out-of-the-box key mentioned above, and require "gpg --full-gen-key" for a custom key generation.
 
 I'll guide the more advanced users through the advanced method, which is to create a custom GPG Key.
-$ gpg --full-gen-key
 
+Let's being.
 
-[amarildo@amarildo ~]$ gpg --full-gen-key
+The first command is, obviously, to create our Key. To make this tutorial as real as possible, I'll be using an e-Mail alias that will be deleted after the completition of this tutorial.
+
+[code]$ gpg --full-gen-key[/code]
+
+[code][amarildo@amarildo ~]$ gpg --full-gen-key
 gpg (GnuPG) 2.1.7; Copyright (C) 2015 Free Software Foundation, Inc.
 This is free software: you are free to change and redistribute it.
 There is NO WARRANTY, to the extent permitted by law.
@@ -44,28 +50,30 @@ Please select what kind of key you want:
    (2) DSA and Elgamal
    (3) DSA (sign only)
    (4) RSA (sign only)
-Your selection? 
+Your selection? [code]
 
-If you want to create a key for encrypting AND signing e-Mails/files, chose 1.
+If you want to create a key for encrypting AND signing e-Mails/files, chose 1. If you want to create a Key just to encrypt your e-Mails, type 4. I'll use my Key to encrypt both files and e-Mails:
 
-Your selection? 1
+[code]Your selection? 1[/code]
 
-RSA keys may be between 1024 and 4096 bits long.
-What keysize do you want? (2048)
+[code]RSA keys may be between 1024 and 4096 bits long.
+What keysize do you want? (2048)[/code]
 
-I always chose 4096 bits of size.
+I always chose 4096 bits of size. You can chose 1024, 2048 or 4096.
 
-RSA keys may be between 1024 and 4096 bits long.
+[code]RSA keys may be between 1024 and 4096 bits long.
 What keysize do you want? (2048) 4096
-Requested keysize is 4096 bits
+Requested keysize is 4096 bits[/code]
 
-Please specify how long the key should be valid.
+Next:
+
+[code]Please specify how long the key should be valid.
          0 = key does not expire
       <n>  = key expires in n days
       <n>w = key expires in n weeks
       <n>m = key expires in n months
       <n>y = key expires in n years
-Key is valid for? (0)
+Key is valid for? (0)[/code]
 
 This is where you chose for how long your key will stay valid. Personally I think something between 2-5 years is good for personal use.
 
@@ -81,7 +89,7 @@ To specify other expiration values:
 
 Here's my choice:
 
-Please specify how long the key should be valid.
+[code]Please specify how long the key should be valid.
          0 = key does not expire
       <n>  = key expires in n days
       <n>w = key expires in n weeks
@@ -89,69 +97,128 @@ Please specify how long the key should be valid.
       <n>y = key expires in n years
 Key is valid for? (0) 5y
 Key expires at Ter 01 Set 2020 22:44:35 UTC
-Is this correct? (y/N) y
+Is this correct? (y/N) y[/code]
 
 Next, this comes up:
 
-GnuPG needs to construct a user ID to identify your key.
+[code]GnuPG needs to construct a user ID to identify your key.
 
-Real name: [b]Amarildo ho-ho-ho[/b]
-Email address: [b]amarildo-hohoho@xmas.com[/b]
-Comment: [b]No comments![/b]
+Real name: Amarildo
+Email address: amarildo-wilders@riseup.net
+Comment: 
 You selected this USER-ID:
-    "[b]Amarildo ho-ho-ho (No comments!) <amarildo-hohoho@xmas.com>[/b]"
+    "Amarildo <amarildo-wilders@riseup.net>""
 
-Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit?
+Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit?[/code]
 
 Review your Name, e-Mail adress, and comment. If everything is OK, then press "O" then hit Enter.
 
 Next comes the most important part: the passphrase.
 
-I have a pretty good memory, so it's easy for me to remember a good passphrase. If you want to test my method then follow along this really short toturial on how I create passphrases.
+I have a pretty good memory, so it's easy for me to remember a good passphrase. If you want to test my method then follow along this really short toturial [link] on how I create passphrases.
 
-The first thing I do is to take a song I like. For this demonstration, let's say this song is ABBA's song called "Lay all your love on me" (I really like this song). 
+###### PUT THIS INTO OTHER THREAD ########
 
-Next I scan the song's lyrics and try to find a good phrase. let's say this is the phrase:
+[quote]Disclaimer: This is a tutorial that will also be used on the [upcoming] tutorial on how to create your own GPG Keys and how to encrypt your e-Mails. Later on I'll be linking the two of them so that it is easier to find them.
 
-Don't go wasting your devotion
+This is the method I use to create my own passphrases and might not be suitable for everyone.[/quote]
 
-Here's where all the magic is one.
+The first thing I do is to take note of a song I like. For this demonstration, let's say this song is ABBA's song called "Lay all your love on me" (I really like this song).
 
-First, I change some of the letters to Capitol, like this:
+Next I scan the song's lyrics and try to find a good phrase. Let's say this is the phrase:[code]Don't go wasting your devotion[/code]
 
-dONtgOwaSTInGYoUREemotIONs
 
-Next, I change some of the letters to numbers so there aren't meny repetitions:
+Here's where all the magic is done.
+First, I change some of the letters to Capitol, like this:[code]dONtgOwaSTInGYoUREemotIONs[/code]
 
-d0NTgOw4STInGYoUR3Emot1ONs
 
-At this part you might think "Ah, this is good enough". To some extent, yes it is; however, this kind of passphrase wouldn't stand long to a dictionary attack that takes "l33t sp34k1ng" into consideration. So if you think you're a valuable target that might suffer a brute-force or dictionary attack, don't stop here.
+Next, I change some of the letters to numbers so there aren't meny repetitions:[code]d0NTgOw4STInGYoUR3Emot1ONs[/code]
+
+
+At this part you might think "this is good enough". To some extent, yes it is; however, this kind of passphrase wouldn't stand long to a dictionary attack that takes "l33t sp34k1ng" into consideration. So if you think you're a valuable target that might suffer a brute-force or dictionary attack, don't stop here.
 
 Next comes the fun part: symbols.
 
-I LOVE to use symbols in my passphrases because they make them look so complicated and pretty! However, you must known that just replacing letters/numbers with symbols will also make your passphrase fall under a good attack. So, here's what I would do to this passphrase:
+I LOVE to use symbols in my passphrases because they make them look so complicated and pretty! However, you must know that just replacing letters/numbers with symbols will also make your passphrase fall under a good attack. So, here's what I would do to this passphrase:[code]#$d0N'T-gO(w@$T1nG+YoURrrR_)Emot!OnS!!!:D[/code]
 
-#$d0N'T-gO(w@$T1nG+YoURrrR_)Emot!OnS!!!:D
-
-See what I did there? It has many good points:
-
+See what I did there?
 * It's easy to remember the topic since it's a song I really like;
 * It's a good passphrase;
 * It's not as hard to remember as a true random passphrase;
 
-If you type this pasphrase a few times (around 10) you probably will remember it, easily. It's not so random to the point where you must type it 100 times to remember it; yet it is complex enough to make a good passphrase that would probably stand up to an attack for millions of years, even if all current computational power was devoted to "crack" it.
+You can make the passphrase longer or shorter depending on how good your memory is.
 
-Now a dialog box will appear. Type your passphrase twice, then click OK. GPG will now generate entropy for your Key; let it do it's thing. Usually I just start playing a game and wait till the generation process is finished.
+If you type this passphrase a few times (around 10 works for me) you probably will remember it. It's not so random to the point where you must type it 100 times to remember it; yet it is complex enough to make a good passphrase that would probably stand up to an attack for millions of years, even if all current computational power was devoted to "crack" it.
+
+#################################
+#################################
+
+Now a dialog box will appear. Type your passphrase twice, then click OK. GPG will now generate entropy for your Key; let it do it's thing. Usually I just start playing a game and wait till the generation process is finished. On older versions of GnuPG, entropy generation is really quick, while on newer GnuPG versions it can take a few minutes.
 
 When it ends, you should see something like this:
 
-gpg: checking the trustdb
+[code]gpg: checking the trustdb                                                                                                    
 gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
-gpg: depth: 0  valid:   2  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 2u
-gpg: next trustdb check due at 2020-09-01
-pub   rsa4096/75E8AA3B 2015-09-03 [expires: 2020-09-01]
-      Key fingerprint = A672 aEB82 B2AA 93F7 7426  FA2D F891 836C 75E8 AA3B
-uid         [ultimate] Amarildo <asd@asd.com>
-sub   rsa4096/BB0E77CB 2015-09-03 [expires: 2020-09-01]
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+gpg: next trustdb check due at 2020-09-28
+pub   4096R/19EE1346 2015-09-30 [expires: 2020-09-28]
+      Key fingerprint = D657 88E4 77EC 7639 F561  74EF 8F08 A13B 19EE 1346
+uid       [ultimate] Amarildo <amarildo-wilders@riseup.net>
+sub   4096R/DC3F9091 2015-09-30 [expires: 2020-09-28][/code]
 
-Done! key creation is done. Pretty easy, right?
+key creation is done. Pretty easy, right?
+
+Before we can encrypt/sign our stuff we need to make sure our recipient can decrypt our stuff. In order to do that, note the "pub" section above, right after our key lenght (4096):
+[code]19EE1346[/code]
+
+This is our public key. We need to upload this key to a key-server so that other people can receive (the key) and to decrypt what has been encrypted. To upload your key to gnu.org's server:
+[code]gpg --send-keys 19EE1346[/code]
+Here's my result:
+[code]amarildo@amarildo:~> gpg --send-keys 19EE1346
+gpg: sending key 19EE1346 to hkp server keys.gnupg.net
+amarildo@amarildo:~> [/code]
+
+Note: on newer GnuPG versions you'll have a lot more verbosity after the keys have been successfuly upload.
+
+In order for your friend to receive your key, he/she needs to issue this command:
+[code]gpg --recv-keys KEYNUMBER[/code]
+This will allow your friend to use your key for de-cryption. In my case, if I wanted to make sure my friend got my key, I'd tell him/her to issue the following command:
+[code]gpg --recv-keys 19EE1346[/code]
+
+Now let's use KMail so that we can encrypt our e-Mails. This part of the tutorial will have pictures so that it's easier for everyone to follow.
+
+The first thing that will pop when you open Kmail is the account assistant. With this tool you'll be able to create and configure your e-Mail account. 
+This is the first screen you'll see:
+https://i.imgur.com/MWfCgR9.png
+
+Next, you'll have to chose between IMAP or POP3. Personally I chose IMAP because it doesn't clog my /home folder, and I can easily configure KMail to download all my e-Mails for offline usage.
+https://i.imgur.com/UZrIguE.png
+
+On this same page, click "Create account".
+
+Now KWallet will appear. If you don't want KWallet to manage your passphrases, click "Basic Setup" and uncheck the box that says "Yes, I wish to use KDE wallet to store my personal information".
+
+I will use KWallet for this, so I'll still click on Basic Setup:
+https://i.imgur.com/shEnJOz.png
+
+Then I'll select "Use GPG Encryption, for better protection:
+https://i.imgur.com/7vOGjba.png
+
+Next, my GPG Key automatically appeared. If yours didn't, just click on the drop down menu and select it.
+https://i.imgur.com/YstP32u.png
+
+A dialog will appear. Type the passphrase you entered when creating your Key.
+
+Everything should be configured by this point. If not, please send me a personal message and I'll see why you're having problems. If I think I can fix your problem then I'll add the solution to this thread.
+
+Now, click on the "New" button so that we can create our first encrypted message.
+https://i.imgur.com/TkZ7fEx.png
+
+Create your message, and don't forget to mark "Sign" or "Encrypt" (or both).
+https://i.imgur.com/SHs1TmS.png
+
+Next, click "Send". You will be required to type your passphrase every time you send a new encrypted/signed e-Mail.
+
+DONE! :)
+
+Happy encrypting.
